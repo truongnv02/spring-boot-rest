@@ -1,5 +1,6 @@
 package com.poly.truongnvph29176.service.impl;
 
+import com.poly.truongnvph29176.exception.ResourceNotFoundException;
 import com.poly.truongnvph29176.model.Employee;
 import com.poly.truongnvph29176.repository.EmployeeRepository;
 import com.poly.truongnvph29176.service.EmployeeService;
@@ -16,5 +17,37 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<Employee> findAllEmployees() {
         return employeeRepository.findAll();
+    }
+
+    @Override
+    public Employee createEmployee(Employee employee) {
+        return employeeRepository.save(employee);
+    }
+
+    @Override
+    public Employee findEmployeeById(Long id) throws Exception {
+        return employeeRepository.findById(id).orElseThrow(() ->
+                    new ResourceNotFoundException("Cannot find Employee with id = " + id)
+                );
+    }
+
+    @Override
+    public Employee updateEmployee(Long id, Employee employee) throws Exception {
+        Employee idEmployee = findEmployeeById(id);
+        idEmployee.setFirstName(employee.getFirstName());
+        idEmployee.setLastName(employee.getLastName());
+        idEmployee.setEmailId(employee.getEmailId());
+        employeeRepository.save(idEmployee);
+        return idEmployee;
+    }
+
+    @Override
+    public Boolean deleteEmployee(Long id) {
+        if (employeeRepository.existsById(id)) {
+            employeeRepository.deleteById(id);
+            return true;
+        }else {
+            return false;
+        }
     }
 }
