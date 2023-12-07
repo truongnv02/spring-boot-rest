@@ -1,6 +1,7 @@
 package com.poly.truongnvph29176.service.impl;
 
 import com.poly.truongnvph29176.entity.Employee;
+import com.poly.truongnvph29176.repository.EmployeeRepository;
 import com.poly.truongnvph29176.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.HashOperations;
@@ -12,33 +13,31 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
-    private static final String EMPLOYEE_KEY = "Employee";
 
-    private final RedisTemplate<String, Object> redisTemplate;
-    private HashOperations<String, Long, Employee> hashOperations;
+    private final EmployeeRepository employeeRepository;
 
     @Override
     public List<Employee> findAll() {
-        return hashOperations.values(EMPLOYEE_KEY);
+        return employeeRepository.fetchAll();
     }
 
     @Override
-    public void create(Employee employee) {
-        hashOperations.put(EMPLOYEE_KEY, employee.getId(), employee);
+    public boolean create(Employee employee) {
+        return employeeRepository.create(employee);
     }
 
     @Override
     public Employee findById(Long id) {
-        return null;
+        return employeeRepository.findById(id);
     }
 
     @Override
-    public void update(Long id, Employee employee) {
-        hashOperations.put(EMPLOYEE_KEY, employee.getId(), employee);
+    public boolean update(Long id, Employee employee) {
+        return employeeRepository.update(id, employee);
     }
 
     @Override
-    public void delete(Long id) {
-        hashOperations.delete(EMPLOYEE_KEY, id);
+    public boolean delete(Long id) {
+        return employeeRepository.delete(id);
     }
 }
