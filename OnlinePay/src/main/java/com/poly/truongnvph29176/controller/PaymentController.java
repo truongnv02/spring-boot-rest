@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -26,17 +27,12 @@ import java.util.TimeZone;
 public class PaymentController {
 
     @GetMapping("/create_payment")
-    public ResponseEntity<?> createPayment() throws UnsupportedEncodingException {
-
-//        long amount = Integer.parseInt(req.getParameter("amount"))*100;
-//        String bankCode = req.getParameter("bankCode");
+    public RedirectView createPayment() throws UnsupportedEncodingException {
 
         long amount = 1000000 * 100;
 
         String vnp_TxnRef = Config.getRandomNumber(8);
-//        String vnp_IpAddr = Config.getIpAddress(req);
 
-        String vnp_TmnCode = Config.vnp_TmnCode;
 
         Map<String, String> vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", Config.vnp_Version);
@@ -95,6 +91,6 @@ public class PaymentController {
         paymentRestDTO.setMessage("Successfully");
         paymentRestDTO.setUrl(paymentUrl);
 
-        return ResponseEntity.status(HttpStatus.OK).body(paymentRestDTO);
+        return new RedirectView(paymentUrl);
     }
 }
